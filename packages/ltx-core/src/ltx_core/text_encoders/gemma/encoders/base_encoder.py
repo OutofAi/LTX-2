@@ -231,6 +231,11 @@ def _load_system_prompt(prompt_name: str) -> str:
 def _find_matching_dir(root_path: str, pattern: str) -> str:
     """
     Recursively search for files matching a glob pattern and return the parent directory of the first match.
+
+    LT_INTERNAL_BEGIN
+    Handles both LT internal storage and HuggingFace directory structures for Gemma model files.
+    See: https://huggingface.co/google/gemma-3-12b-it-qat-q4_0-unquantized
+    LT_INTERNAL_END
     """
 
     matches = list(Path(root_path).rglob(pattern))
@@ -239,19 +244,28 @@ def _find_matching_dir(root_path: str, pattern: str) -> str:
     return str(matches[0].parent)
 
 
-def module_ops_from_gemma_root(gemma_root: str) -> tuple[ModuleOps, ...]:
-    gemma_path = _find_matching_dir(gemma_root, "model*.safetensors")
-    tokenizer_path = _find_matching_dir(gemma_root, "tokenizer.model")
+def module_ops_from_gemma_root(gemma_root: str, local_files_only: bool = True) -> tuple[ModuleOps, ...]:
+    if len(gemma_root.split("/")) != 2:
+        gemma_path = _find_matching_dir(gemma_root, "model*.safetensors")
+        tokenizer_path = _find_matching_dir(gemma_root, "tokenizer.model")
+    else:
+        # Hub ID: google/gemma-3-12b-it-qat-q4_0-unquantized
+        gemma_path = tokenizer_path = gemma_root
 
+    # LT_INTERNAL_BEGIN
+    # Note: We pass torch_dtype to from_pretrained here to maintain backward compatibility with older versions of
+    # Transformers. This is necessary to compare results with ComfyUI, which uses an older version that raises an error
+    # when dtype is passed. Current solution only logs a warning.
+    # LT_INTERNAL_END
     def load_gemma(module: GemmaTextEncoderModelBase) -> GemmaTextEncoderModelBase:
         module.model = Gemma3ForConditionalGeneration.from_pretrained(
-            gemma_path, local_files_only=True, torch_dtype=torch.bfloat16
+            gemma_path, local_files_only=local_files_only, torch_dtype=torch.bfloat16
         )
         module._gemma_root = module._gemma_root or gemma_root
         return module
 
     def load_tokenizer(module: GemmaTextEncoderModelBase) -> GemmaTextEncoderModelBase:
-        module.tokenizer = LTXVGemmaTokenizer(tokenizer_path, 1024)
+        module.tokenizer = LTXVGemmaTokenizer(tokenizer_path, 1024, local_files_only)
         module._gemma_root = module._gemma_root or gemma_root
         return module
 
