@@ -93,6 +93,7 @@ class ModelLedger:
         loras: LoraPathStrengthAndSDOps | None = None,
         registry: Registry | None = None,
         fp8transformer: bool = False,
+        local_files_only: bool = True
     ):
         self.dtype = dtype
         self.device = device
@@ -102,6 +103,7 @@ class ModelLedger:
         self.loras = loras or ()
         self.registry = registry or DummyRegistry()
         self.fp8transformer = fp8transformer
+        self.local_files_only = local_files_only
         self.build_model_builders()
 
     def build_model_builders(self) -> None:
@@ -148,7 +150,7 @@ class ModelLedger:
                     model_class_configurator=AVGemmaTextEncoderModelConfigurator,
                     model_sd_ops=AV_GEMMA_TEXT_ENCODER_KEY_OPS,
                     registry=self.registry,
-                    module_ops=module_ops_from_gemma_root(self.gemma_root_path),
+                    module_ops=module_ops_from_gemma_root(self.gemma_root_path,self.local_files_only),
                 )
 
         if self.spatial_upsampler_path is not None:
