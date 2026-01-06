@@ -51,6 +51,7 @@ class DistilledPipeline:
         loras: list[LoraPathStrengthAndSDOps],
         device: torch.device = device,
         fp8transformer: bool = False,
+        local_files_only: bool = True,
     ):
         self.device = device
         self.dtype = torch.bfloat16
@@ -63,6 +64,7 @@ class DistilledPipeline:
             gemma_root_path=gemma_root,
             loras=loras,
             fp8transformer=fp8transformer,
+            local_files_only=local_files_only
         )
 
         self.pipeline_components = PipelineComponents(
