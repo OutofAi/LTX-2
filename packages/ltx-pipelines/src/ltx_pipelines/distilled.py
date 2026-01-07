@@ -6,7 +6,7 @@ import torch
 
 from ltx_core.loader.primitives import LoraPathStrengthAndSDOps
 from ltx_core.loader.sd_ops import LTXV_LORA_COMFY_RENAMING_MAP
-from ltx_core.model.model_ledger import ModelLedger
+from ltx_pipelines.utils import ModelLedger
 from ltx_core.pipeline.components.diffusion_steps import EulerDiffusionStep
 from ltx_core.pipeline.components.noisers import GaussianNoiser
 from ltx_core.pipeline.components.protocols import DiffusionStepProtocol, VideoPixelShape
