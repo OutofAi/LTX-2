@@ -12,9 +12,7 @@ try:
 except ImportError:
     memory_efficient_attention = None
 try:
-    # FlashAttention3 and XFormersAttention cannot be used together
-    if memory_efficient_attention is None:
-        import flash_attn_interface
+    import flash_attn_interface
 except ImportError:
     flash_attn_interface = None
 
@@ -132,13 +130,7 @@ class AttentionFunction(Enum):
         elif self is AttentionFunction.FLASH_ATTENTION_3:
             return FlashAttention3()(q, k, v, heads, mask)
         else:
-            # Default behavior: XFormers if installed else - PyTorch
-            print("using default")
-            return (
-                XFormersAttention()(q, k, v, heads, mask)
-                if memory_efficient_attention is not None
-                else PytorchAttention()(q, k, v, heads, mask)
-            )
+            return FlashAttention3()(q, k, v, heads, mask)
 
 
 class Attention(torch.nn.Module):
