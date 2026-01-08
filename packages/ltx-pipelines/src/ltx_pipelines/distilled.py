@@ -176,6 +176,7 @@ class DistilledPipeline:
             dtype=dtype,
             device=self.device,
         )
+        video_chunks_number = get_video_chunks_number(num_frames, tiling_config)
         video_state, audio_state = denoise_audio_video(
             output_shape=stage_2_output_shape,
             conditionings=stage_2_conditionings,
@@ -205,5 +206,6 @@ class DistilledPipeline:
             audio=decoded_audio,
             audio_sample_rate=AUDIO_SAMPLE_RATE,
             output_path=output_path,
+            video_chunks_number=video_chunks_number,
         )
 
