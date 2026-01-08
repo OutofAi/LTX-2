@@ -133,6 +133,7 @@ class AttentionFunction(Enum):
             return FlashAttention3()(q, k, v, heads, mask)
         else:
             # Default behavior: XFormers if installed else - PyTorch
+            print("using default")
             return (
                 XFormersAttention()(q, k, v, heads, mask)
                 if memory_efficient_attention is not None

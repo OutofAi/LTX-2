@@ -157,7 +157,7 @@ class DistilledPipeline:
         )
 
         # Stage 2: Upsample and refine the video at higher resolution with distilled LORA.
-        upscaled_video_latent = utils.upsample_video(
+        upscaled_video_latent = upsample_video(
             latent=video_state.latent[:1], video_encoder=video_encoder, upsampler=self.model_ledger.spatial_upsampler()
         )
 
