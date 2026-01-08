@@ -162,7 +162,7 @@ class DistilledPipeline:
         )
 
         torch.cuda.synchronize()
-        utils.cleanup_memory()
+        cleanup_memory()
 
         stage_2_sigmas = torch.Tensor(STAGE_2_DISTILLED_SIGMA_VALUES).to(self.device)
         stage_2_output_shape = VideoPixelShape(
@@ -208,34 +208,3 @@ class DistilledPipeline:
             output_path=output_path,
         )
 
-
-def main() -> None:
-    parser = utils.default_2_stage_distilled_arg_parser()
-    args = parser.parse_args()
-    lora_strengths = (args.lora_strength + [DEFAULT_LORA_STRENGTH] * len(args.lora))[: len(args.lora)]
-    loras = [
-        LoraPathStrengthAndSDOps(lora, strength, LTXV_LORA_COMFY_RENAMING_MAP)
-        for lora, strength in zip(args.lora, lora_strengths, strict=True)
-    ]
-    pipeline = DistilledPipeline(
-        checkpoint_path=args.checkpoint_path,
-        spatial_upsampler_path=args.spatial_upsampler_path,
-        gemma_root=args.gemma_root,
-        loras=loras,
-        fp8transformer=args.enable_fp8,
-    )
-    pipeline(
-        prompt=args.prompt,
-        output_path=args.output_path,
-        seed=args.seed,
-        height=args.height,
-        width=args.width,
-        num_frames=args.num_frames,
-        frame_rate=args.frame_rate,
-        images=args.images,
-        tiling_config=TilingConfig.default(),
-    )
-
-
-if __name__ == "__main__":
-    main()
