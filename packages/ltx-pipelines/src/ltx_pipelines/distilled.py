@@ -9,7 +9,8 @@ from ltx_core.loader.sd_ops import LTXV_LORA_COMFY_RENAMING_MAP
 from ltx_pipelines.utils import ModelLedger
 from ltx_core.components.diffusion_steps import EulerDiffusionStep
 from ltx_core.components.noisers import GaussianNoiser
-from ltx_core.components.protocols import DiffusionStepProtocol, VideoPixelShape
+from ltx_core.components.protocols import DiffusionStepProtocol
+from ltx_core.types import VideoPixelShape
 from ltx_core.conditioning.item import LatentState
 from ltx_core.model.video_vae import TilingConfig
 from ltx_pipelines import utils
