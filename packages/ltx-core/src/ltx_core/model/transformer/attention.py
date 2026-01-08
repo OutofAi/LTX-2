@@ -120,21 +120,14 @@ class AttentionFunction(Enum):
     def __call__(
         self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, heads: int, mask: torch.Tensor | None = None
     ) -> torch.Tensor:
-        if self is AttentionFunction.PYTORCH:
-            return PytorchAttention()(q, k, v, heads, mask)
-        elif self is AttentionFunction.XFORMERS:
-            return XFormersAttention()(q, k, v, heads, mask)
-        elif self is AttentionFunction.FLASH_ATTENTION_3:
+        if mask is None:
             return FlashAttention3()(q, k, v, heads, mask)
         else:
-            if mask is None:
-                return FlashAttention3()(q, k, v, heads, mask)
-            else:
-                return (
-                    XFormersAttention()(q, k, v, heads, mask)
-                    if memory_efficient_attention is not None
-                    else PytorchAttention()(q, k, v, heads, mask)
-                )
+            return (
+                XFormersAttention()(q, k, v, heads, mask)
+                if memory_efficient_attention is not None
+                else PytorchAttention()(q, k, v, heads, mask)
+            )
 
 
 class Attention(torch.nn.Module):
