@@ -11,11 +11,8 @@ try:
     from xformers.ops import memory_efficient_attention
 except ImportError:
     memory_efficient_attention = None
-try:
-    import flash_attn_interface
-except ImportError:
-    flash_attn_interface = None
-
+    
+import flash_attn_interface
 
 class AttentionCallable(Protocol):
     def __call__(
