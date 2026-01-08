@@ -37,7 +37,7 @@ from ltx_pipelines.utils.helpers import (
 from ltx_pipelines.utils.media_io import encode_video
 from ltx_pipelines.utils.types import PipelineComponents
 
-device = utils.get_device()
+device = get_device()
 
 
 class DistilledPipeline:
