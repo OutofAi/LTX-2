@@ -20,7 +20,7 @@ from ltx_pipelines.utils import ModelLedger
 from ltx_pipelines.utils.args import default_2_stage_distilled_arg_parser
 from ltx_pipelines.utils.constants import (
     AUDIO_SAMPLE_RATE,
-    DEFAULT_LORA_STRENGTH
+    DEFAULT_LORA_STRENGTH,
     DISTILLED_SIGMA_VALUES,
     STAGE_2_DISTILLED_SIGMA_VALUES,
 )
