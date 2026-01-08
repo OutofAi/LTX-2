@@ -127,7 +127,14 @@ class AttentionFunction(Enum):
         elif self is AttentionFunction.FLASH_ATTENTION_3:
             return FlashAttention3()(q, k, v, heads, mask)
         else:
-            return FlashAttention3()(q, k, v, heads, mask)
+            if mask is None:
+                return FlashAttention3()(q, k, v, heads, mask)
+            else:
+                return (
+                    XFormersAttention()(q, k, v, heads, mask)
+                    if memory_efficient_attention is not None
+                    else PytorchAttention()(q, k, v, heads, mask)
+                )
 
 
 class Attention(torch.nn.Module):
